@@ -1,0 +1,6 @@
+﻿{
+  "parent": "minecraft:block/button",
+  "textures": {
+    "texture": "oceanscurse:block/palm_planks"
+  }
+}

@@ -44,7 +44,7 @@ The mod turns the Minecraft ocean into a living, dangerous, and adventure‑fill
 
 **Milestone v0.1 "Core of the Curse" – loop:** find cursed doubloons → fight off monsters that appear because of the curse with a saber → decide: hoard gold (dark karma) or return it to the sea to cleanse (light karma). ✅ Done
 
-**Milestone v0.2 "Development of the Curse – New Hostile Mobs"** – due to the curse, new hostile mobs begin to appear: the Cursed Drowned Zombie and the Cursed Skeleton. Features: each mob has 3 weapon variants: common – saber; zombie – chain attack; skeleton – bow with effect arrows. ✅ Done
+**Milestone v0.2 "Development of the Curse – New Hostile Mobs:"** – due to the curse, new hostile mobs begin to appear: the Cursed Drowned Zombie and the Cursed Skeleton. Features: each mob has 3 weapon variants: common – saber; zombie – chain attack; skeleton – bow with effect arrows. ✅ Done
 
 **Milestone v0.3 "New Blocks and Resources – Preparation for Biomes":** palm wood blocks, banana and pineapple bushes, wood crafting recipes. ⏳ In progress
 

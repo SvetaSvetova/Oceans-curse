@@ -1,0 +1,13 @@
+﻿{
+  "variants": {
+    "type=bottom": {
+      "model": "oceanscurse:block/palm_slab"
+    },
+    "type=double": {
+      "model": "oceanscurse:block/palm_planks"
+    },
+    "type=top": {
+      "model": "oceanscurse:block/palm_slab_top"
+    }
+  }
+}

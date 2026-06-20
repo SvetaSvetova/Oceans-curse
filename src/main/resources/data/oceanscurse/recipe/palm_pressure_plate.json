@@ -1,0 +1,14 @@
+﻿{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "wooden_pressure_plate",
+  "key": {
+    "#": "oceanscurse:palm_planks"
+  },
+  "pattern": [
+    "##"
+  ],
+  "result": {
+    "id": "oceanscurse:palm_pressure_plate"
+  }
+}

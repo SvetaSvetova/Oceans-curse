@@ -7,6 +7,7 @@ import com.oceanscurse.client.OceansClient;
 import com.oceanscurse.commands.CurseCommand;
 import com.oceanscurse.curse.KarmaEvents;
 import com.oceanscurse.curse.NightCurse;
+import com.oceanscurse.block.StrippableLogBlock;
 import com.oceanscurse.effects.BleedingMobEffect;
 import com.oceanscurse.entity.CursedDrowned;
 import com.oceanscurse.entity.CursedSkeleton;
@@ -30,9 +31,27 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -54,6 +73,87 @@ public final class OceansCurse {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+
+    // --- Blocks (palm wood) ---
+    public static final RegistryObject<Block> PALM_LOG = BLOCKS.register("palm_log",
+        () -> new StrippableLogBlock(() -> OceansCurse.STRIPPED_PALM_LOG.get(), BlockBehaviour.Properties.of()
+            .setId(BLOCKS.key("palm_log"))
+            .mapColor(MapColor.DIRT)
+            .instrument(NoteBlockInstrument.BASS)
+            .strength(2.0F)
+            .sound(SoundType.WOOD)
+            .ignitedByLava()));
+    public static final RegistryObject<Block> PALM_PLANKS = BLOCKS.register("palm_planks",
+        () -> new Block(BlockBehaviour.Properties.of()
+            .setId(BLOCKS.key("palm_planks"))
+            .mapColor(MapColor.SAND)
+            .instrument(NoteBlockInstrument.BASS)
+            .strength(2.0F, 3.0F)
+            .sound(SoundType.WOOD)
+            .ignitedByLava()));
+
+    public static final RegistryObject<Block> STRIPPED_PALM_LOG = BLOCKS.register("stripped_palm_log",
+        () -> new RotatedPillarBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("stripped_palm_log"))
+            .mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_WOOD = BLOCKS.register("palm_wood",
+        () -> new StrippableLogBlock(() -> OceansCurse.STRIPPED_PALM_WOOD.get(), BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_wood"))
+            .mapColor(MapColor.DIRT).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> STRIPPED_PALM_WOOD = BLOCKS.register("stripped_palm_wood",
+        () -> new RotatedPillarBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("stripped_palm_wood"))
+            .mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_STAIRS = BLOCKS.register("palm_stairs",
+        () -> new StairBlock(PALM_PLANKS.get().defaultBlockState(), BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_stairs"))
+            .mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_SLAB = BLOCKS.register("palm_slab",
+        () -> new SlabBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_slab"))
+            .mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_FENCE = BLOCKS.register("palm_fence",
+        () -> new FenceBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_fence"))
+            .mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_FENCE_GATE = BLOCKS.register("palm_fence_gate",
+        () -> new FenceGateBlock(WoodType.OAK, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_fence_gate"))
+            .mapColor(MapColor.SAND).forceSolidOn().instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_DOOR = BLOCKS.register("palm_door",
+        () -> new DoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_door"))
+            .mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASS).strength(3.0F).noOcclusion().sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_TRAPDOOR = BLOCKS.register("palm_trapdoor",
+        () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_trapdoor"))
+            .mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASS).strength(3.0F).noOcclusion().sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryObject<Block> PALM_BUTTON = BLOCKS.register("palm_button",
+        () -> new ButtonBlock(BlockSetType.OAK, 30, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_button"))
+            .noCollision().strength(0.5F).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY)));
+    public static final RegistryObject<Block> PALM_PRESSURE_PLATE = BLOCKS.register("palm_pressure_plate",
+        () -> new PressurePlateBlock(BlockSetType.OAK, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_pressure_plate"))
+            .mapColor(MapColor.SAND).forceSolidOn().instrument(NoteBlockInstrument.BASS).noCollision().strength(0.5F).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY).ignitedByLava()));
+
+    // Block items (each block needs an item form for the inventory / creative tab).
+    public static final RegistryObject<Item> PALM_LOG_ITEM = ITEMS.register("palm_log",
+        () -> new BlockItem(PALM_LOG.get(), new Item.Properties().setId(ITEMS.key("palm_log"))));
+    public static final RegistryObject<Item> PALM_PLANKS_ITEM = ITEMS.register("palm_planks",
+        () -> new BlockItem(PALM_PLANKS.get(), new Item.Properties().setId(ITEMS.key("palm_planks"))));
+    public static final RegistryObject<Item> STRIPPED_PALM_LOG_ITEM = ITEMS.register("stripped_palm_log",
+        () -> new BlockItem(STRIPPED_PALM_LOG.get(), new Item.Properties().setId(ITEMS.key("stripped_palm_log"))));
+    public static final RegistryObject<Item> PALM_WOOD_ITEM = ITEMS.register("palm_wood",
+        () -> new BlockItem(PALM_WOOD.get(), new Item.Properties().setId(ITEMS.key("palm_wood"))));
+    public static final RegistryObject<Item> STRIPPED_PALM_WOOD_ITEM = ITEMS.register("stripped_palm_wood",
+        () -> new BlockItem(STRIPPED_PALM_WOOD.get(), new Item.Properties().setId(ITEMS.key("stripped_palm_wood"))));
+    public static final RegistryObject<Item> PALM_STAIRS_ITEM = ITEMS.register("palm_stairs",
+        () -> new BlockItem(PALM_STAIRS.get(), new Item.Properties().setId(ITEMS.key("palm_stairs"))));
+    public static final RegistryObject<Item> PALM_SLAB_ITEM = ITEMS.register("palm_slab",
+        () -> new BlockItem(PALM_SLAB.get(), new Item.Properties().setId(ITEMS.key("palm_slab"))));
+    public static final RegistryObject<Item> PALM_FENCE_ITEM = ITEMS.register("palm_fence",
+        () -> new BlockItem(PALM_FENCE.get(), new Item.Properties().setId(ITEMS.key("palm_fence"))));
+    public static final RegistryObject<Item> PALM_FENCE_GATE_ITEM = ITEMS.register("palm_fence_gate",
+        () -> new BlockItem(PALM_FENCE_GATE.get(), new Item.Properties().setId(ITEMS.key("palm_fence_gate"))));
+    public static final RegistryObject<Item> PALM_DOOR_ITEM = ITEMS.register("palm_door",
+        () -> new BlockItem(PALM_DOOR.get(), new Item.Properties().setId(ITEMS.key("palm_door"))));
+    public static final RegistryObject<Item> PALM_TRAPDOOR_ITEM = ITEMS.register("palm_trapdoor",
+        () -> new BlockItem(PALM_TRAPDOOR.get(), new Item.Properties().setId(ITEMS.key("palm_trapdoor"))));
+    public static final RegistryObject<Item> PALM_BUTTON_ITEM = ITEMS.register("palm_button",
+        () -> new BlockItem(PALM_BUTTON.get(), new Item.Properties().setId(ITEMS.key("palm_button"))));
+    public static final RegistryObject<Item> PALM_PRESSURE_PLATE_ITEM = ITEMS.register("palm_pressure_plate",
+        () -> new BlockItem(PALM_PRESSURE_PLATE.get(), new Item.Properties().setId(ITEMS.key("palm_pressure_plate"))));
 
     // --- Entities ---
     // Cursed Drowned — the curse's own armed dead (see CursedDrowned); summoned by the night curse.
@@ -124,6 +224,19 @@ public final class OceansCurse {
                 output.accept(COCONUT.get());
                 output.accept(CURSED_DROWNED_SPAWN_EGG.get());
                 output.accept(CURSED_SKELETON_SPAWN_EGG.get());
+                output.accept(PALM_LOG_ITEM.get());
+                output.accept(STRIPPED_PALM_LOG_ITEM.get());
+                output.accept(PALM_WOOD_ITEM.get());
+                output.accept(STRIPPED_PALM_WOOD_ITEM.get());
+                output.accept(PALM_PLANKS_ITEM.get());
+                output.accept(PALM_STAIRS_ITEM.get());
+                output.accept(PALM_SLAB_ITEM.get());
+                output.accept(PALM_FENCE_ITEM.get());
+                output.accept(PALM_FENCE_GATE_ITEM.get());
+                output.accept(PALM_DOOR_ITEM.get());
+                output.accept(PALM_TRAPDOOR_ITEM.get());
+                output.accept(PALM_BUTTON_ITEM.get());
+                output.accept(PALM_PRESSURE_PLATE_ITEM.get());
             }).build());
 
     public OceansCurse(FMLJavaModLoadingContext context) {
@@ -133,6 +246,7 @@ public final class OceansCurse {
         FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
 
         // Hook our registers onto the mod event bus so the content actually gets registered
+        BLOCKS.register(modBusGroup);
         ITEMS.register(modBusGroup);
         CREATIVE_MODE_TABS.register(modBusGroup);
         MOB_EFFECTS.register(modBusGroup);

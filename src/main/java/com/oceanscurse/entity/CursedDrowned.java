@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.zombie.Drowned;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
@@ -24,8 +25,11 @@ import net.minecraft.world.level.ServerLevelAccessor;
 public class CursedDrowned extends Drowned {
     private static final double MAX_HEALTH = 24.0;
     private static final float CUTLASS_DROP_CHANCE = 0.08F;
-    /** The rest spawn unarmed — the cutlass is strong, so it shouldn't be on every one of them. */
-    private static final float CUTLASS_CHANCE = 0.45F;
+
+    // Spawn loadout weights (cutlass / chain / the remainder unarmed). The cutlass is strong, so it
+    // isn't on every one of them; the chain variant drags you in with ChainPullGoal.
+    private static final float CUTLASS_CHANCE = 0.35F;
+    private static final float CHAIN_CHANCE = 0.30F;
 
     public CursedDrowned(final EntityType<? extends Drowned> type, final Level level) {
         super(type, level);
@@ -33,6 +37,13 @@ public class CursedDrowned extends Drowned {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Drowned.createAttributes();
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        // Only the chain-holding variant actually pulls (the goal checks the held item).
+        this.goalSelector.addGoal(2, new ChainPullGoal(this));
     }
 
     @Override
@@ -47,11 +58,13 @@ public class CursedDrowned extends Drowned {
             this.setHealth((float) MAX_HEALTH);
         }
 
-        // Weapon variety: some carry the cutlass (in place of the drowned's trident), the rest are
-        // unarmed for balance. (The chain variant joins here in a later step.)
-        if (this.getRandom().nextFloat() < CUTLASS_CHANCE) {
+        // Weapon variety: cutlass (melee), chain (drags you in), or unarmed for balance.
+        final float roll = this.getRandom().nextFloat();
+        if (roll < CUTLASS_CHANCE) {
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(OceansCurse.ABORDAGE_CUTLASS.get()));
             this.setDropChance(EquipmentSlot.MAINHAND, CUTLASS_DROP_CHANCE);
+        } else if (roll < CUTLASS_CHANCE + CHAIN_CHANCE) {
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_CHAIN));
         } else {
             this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
