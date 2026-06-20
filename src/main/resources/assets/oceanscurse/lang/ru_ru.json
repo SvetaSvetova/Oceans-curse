@@ -1,0 +1,11 @@
+{
+  "itemGroup.oceanscurse": "Проклятье океана",
+  "item.oceanscurse.cursed_doubloon": "Проклятый дублон",
+  "item.oceanscurse.cleansed_doubloon": "Очищенный дублон",
+  "item.oceanscurse.abordage_cutlass": "Абордажная сабля",
+  "item.oceanscurse.coconut": "Кокос",
+  "effect.oceanscurse.bleeding": "Кровотечение",
+  "commands.oceanscurse.karma.query": "Тяжесть твоего проклятия: %s",
+  "commands.oceanscurse.karma.set": "Проклятие изменено: %s",
+  "hud.oceanscurse.karma": "Проклятие %s"
+}

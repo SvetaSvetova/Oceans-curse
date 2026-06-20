@@ -1,0 +1,8 @@
+{
+  "type": "oceanscurse:add_item",
+  "conditions": [
+    { "condition": "forge:loot_table_id", "loot_table_id": "minecraft:chests/buried_treasure" }
+  ],
+  "item": "oceanscurse:cursed_doubloon",
+  "count": 3
+}

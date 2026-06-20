@@ -1,0 +1,11 @@
+{
+  "itemGroup.oceanscurse": "Ocean's Curse",
+  "item.oceanscurse.cursed_doubloon": "Cursed Doubloon",
+  "item.oceanscurse.cleansed_doubloon": "Cleansed Doubloon",
+  "item.oceanscurse.abordage_cutlass": "Abordage Cutlass",
+  "item.oceanscurse.coconut": "Coconut",
+  "effect.oceanscurse.bleeding": "Bleeding",
+  "commands.oceanscurse.karma.query": "Your curse weighs %s",
+  "commands.oceanscurse.karma.set": "Curse set to %s",
+  "hud.oceanscurse.karma": "Curse %s"
+}

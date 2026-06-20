@@ -1,0 +1,10 @@
+{
+  "type": "oceanscurse:add_item",
+  "conditions": [
+    { "condition": "forge:loot_table_id", "loot_table_id": "minecraft:entities/drowned" },
+    { "condition": "minecraft:killed_by_player" },
+    { "condition": "minecraft:random_chance", "chance": 0.05 }
+  ],
+  "item": "oceanscurse:cursed_doubloon",
+  "count": 1
+}

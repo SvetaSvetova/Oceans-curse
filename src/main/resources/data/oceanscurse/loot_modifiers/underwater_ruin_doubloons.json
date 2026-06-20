@@ -1,0 +1,9 @@
+{
+  "type": "oceanscurse:add_item",
+  "conditions": [
+    { "condition": "forge:loot_table_id", "loot_table_id": "minecraft:chests/underwater_ruin_big" },
+    { "condition": "minecraft:random_chance", "chance": 0.3 }
+  ],
+  "item": "oceanscurse:cursed_doubloon",
+  "count": 1
+}

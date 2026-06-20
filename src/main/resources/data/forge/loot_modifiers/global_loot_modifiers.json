@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "entries": [
+    "oceanscurse:drowned_doubloon",
+    "oceanscurse:buried_treasure_doubloons",
+    "oceanscurse:shipwreck_treasure_doubloons",
+    "oceanscurse:underwater_ruin_doubloons"
+  ]
+}
