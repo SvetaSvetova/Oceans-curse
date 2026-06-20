@@ -8,6 +8,8 @@ import com.oceanscurse.commands.CurseCommand;
 import com.oceanscurse.curse.KarmaEvents;
 import com.oceanscurse.curse.NightCurse;
 import com.oceanscurse.effects.BleedingMobEffect;
+import com.oceanscurse.entity.CursedDrowned;
+import com.oceanscurse.entity.CursedSkeleton;
 import com.oceanscurse.items.CursedDoubloonItem;
 import com.oceanscurse.items.CutlassItem;
 import com.oceanscurse.loot.AddItemModifier;
@@ -16,9 +18,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -26,6 +31,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -47,6 +53,26 @@ public final class OceansCurse {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
+
+    // --- Entities ---
+    // Cursed Drowned — the curse's own armed dead (see CursedDrowned); summoned by the night curse.
+    public static final RegistryObject<EntityType<CursedDrowned>> CURSED_DROWNED = ENTITY_TYPES.register("cursed_drowned",
+        () -> EntityType.Builder.<CursedDrowned>of(CursedDrowned::new, MobCategory.MONSTER)
+            .sized(0.6F, 1.95F)
+            .build(ENTITY_TYPES.key("cursed_drowned")));
+
+    // Cursed Skeleton — the curse's archer dead, raised on land (see CursedSkeleton).
+    public static final RegistryObject<EntityType<CursedSkeleton>> CURSED_SKELETON = ENTITY_TYPES.register("cursed_skeleton",
+        () -> EntityType.Builder.<CursedSkeleton>of(CursedSkeleton::new, MobCategory.MONSTER)
+            .sized(0.6F, 1.99F)
+            .build(ENTITY_TYPES.key("cursed_skeleton")));
+
+    // --- Spawn eggs (creative-tab convenience) ---
+    public static final RegistryObject<Item> CURSED_DROWNED_SPAWN_EGG = ITEMS.register("cursed_drowned_spawn_egg",
+        () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("cursed_drowned_spawn_egg")).spawnEgg(CURSED_DROWNED.get())));
+    public static final RegistryObject<Item> CURSED_SKELETON_SPAWN_EGG = ITEMS.register("cursed_skeleton_spawn_egg",
+        () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("cursed_skeleton_spawn_egg")).spawnEgg(CURSED_SKELETON.get())));
     public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS =
         DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
 
@@ -96,6 +122,8 @@ public final class OceansCurse {
                 output.accept(CLEANSED_DOUBLOON.get());
                 output.accept(ABORDAGE_CUTLASS.get());
                 output.accept(COCONUT.get());
+                output.accept(CURSED_DROWNED_SPAWN_EGG.get());
+                output.accept(CURSED_SKELETON_SPAWN_EGG.get());
             }).build());
 
     public OceansCurse(FMLJavaModLoadingContext context) {
@@ -109,6 +137,10 @@ public final class OceansCurse {
         CREATIVE_MODE_TABS.register(modBusGroup);
         MOB_EFFECTS.register(modBusGroup);
         LOOT_MODIFIERS.register(modBusGroup);
+        ENTITY_TYPES.register(modBusGroup);
+
+        // Give our entities their attributes (max health, damage, etc.).
+        EntityAttributeCreationEvent.BUS.addListener(this::onAttributeCreation);
 
         // Network channel (used to push karma to clients for the HUD).
         OceansNetwork.init();
@@ -133,5 +165,10 @@ public final class OceansCurse {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("Ocean's Curse is rising from the depths...");
+    }
+
+    private void onAttributeCreation(final EntityAttributeCreationEvent event) {
+        event.put(CURSED_DROWNED.get(), CursedDrowned.createAttributes().build());
+        event.put(CURSED_SKELETON.get(), CursedSkeleton.createAttributes().build());
     }
 }

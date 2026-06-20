@@ -1,6 +1,8 @@
 package com.oceanscurse.client;
 
+import com.oceanscurse.OceansCurse;
 import net.minecraftforge.client.event.AddGuiOverlayLayersEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 
 /**
  * Client-only entry point. Loaded and called only when {@code FMLEnvironment.dist == Dist.CLIENT}
@@ -12,5 +14,12 @@ public final class OceansClient {
 
     public static void init() {
         AddGuiOverlayLayersEvent.BUS.addListener(KarmaHudLayer::onAddLayers);
+        EntityRenderersEvent.RegisterRenderers.BUS.addListener(OceansClient::onRegisterRenderers);
+    }
+
+    private static void onRegisterRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        // Vanilla models, our own cursed textures.
+        event.registerEntityRenderer(OceansCurse.CURSED_DROWNED.get(), CursedDrownedRenderer::new);
+        event.registerEntityRenderer(OceansCurse.CURSED_SKELETON.get(), CursedSkeletonRenderer::new);
     }
 }

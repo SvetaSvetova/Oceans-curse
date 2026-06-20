@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "oceanscurse:item/cursed_drowned_spawn_egg"
+  }
+}

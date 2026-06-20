@@ -5,11 +5,12 @@ import com.oceanscurse.network.OceansNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.monster.zombie.Drowned;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -42,8 +43,8 @@ public final class NightCurse {
     private static final float SPAWN_CHANCE_PER_KARMA = 0.012F;
     private static final float SPAWN_CHANCE_CAP = 0.5F;
 
-    /** Don't pile drowned on an AFK hoarder. */
-    private static final int MAX_NEARBY_DROWNED = 6;
+    /** Don't pile monsters on an AFK hoarder. */
+    private static final int MAX_NEARBY_MONSTERS = 8;
     private static final int MIN_SPAWN_DIST = 8;
     private static final int MAX_SPAWN_DIST = 16;
 
@@ -97,7 +98,7 @@ public final class NightCurse {
         if (cursedNight) {
             final int karma = Karma.get(player);
             if (karma < 0 && random.nextFloat() < Math.min(SPAWN_CHANCE_CAP, SPAWN_CHANCE_PER_KARMA * -karma)) {
-                trySpawnDrowned(level, player, random);
+                trySpawnCursedDead(level, player, random);
             }
         }
     }
@@ -119,8 +120,8 @@ public final class NightCurse {
         return count;
     }
 
-    private static void trySpawnDrowned(final ServerLevel level, final ServerPlayer player, final RandomSource random) {
-        if (level.getEntitiesOfClass(Drowned.class, player.getBoundingBox().inflate(24.0)).size() >= MAX_NEARBY_DROWNED) {
+    private static void trySpawnCursedDead(final ServerLevel level, final ServerPlayer player, final RandomSource random) {
+        if (level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(24.0)).size() >= MAX_NEARBY_MONSTERS) {
             return;
         }
         final double angle = random.nextDouble() * Math.PI * 2.0;
@@ -132,6 +133,12 @@ public final class NightCurse {
         if (!level.isLoaded(pos) || !level.canSeeSky(pos)) {
             return;
         }
-        EntityTypes.DROWNED.spawn(level, pos, EntitySpawnReason.EVENT);
+
+        // The sea gives up the drowned; dry land raises skeletons (or a drowned wandered ashore).
+        final boolean overWater = level.getFluidState(pos.below()).is(FluidTags.WATER);
+        final EntityType<?> type = overWater || random.nextBoolean()
+            ? OceansCurse.CURSED_DROWNED.get()
+            : OceansCurse.CURSED_SKELETON.get();
+        type.spawn(level, pos, EntitySpawnReason.EVENT);
     }
 }
