@@ -7,6 +7,8 @@ import com.oceanscurse.client.OceansClient;
 import com.oceanscurse.commands.CurseCommand;
 import com.oceanscurse.curse.KarmaEvents;
 import com.oceanscurse.curse.NightCurse;
+import com.oceanscurse.block.BananaBushBlock;
+import com.oceanscurse.block.PineappleBushBlock;
 import com.oceanscurse.block.StrippableLogBlock;
 import com.oceanscurse.effects.BleedingMobEffect;
 import com.oceanscurse.entity.CursedDrowned;
@@ -19,9 +21,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.component.Consumables;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -127,33 +134,54 @@ public final class OceansCurse {
         () -> new PressurePlateBlock(BlockSetType.OAK, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_pressure_plate"))
             .mapColor(MapColor.SAND).forceSolidOn().instrument(NoteBlockInstrument.BASS).noCollision().strength(0.5F).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY).ignitedByLava()));
 
+    // --- Fruit bushes (planted by their fruit item, harvested by hand when grown) ---
+    public static final RegistryObject<Block> BANANA_BUSH = BLOCKS.register("banana_bush",
+        () -> new BananaBushBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("banana_bush"))
+            .mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.SWEET_BERRY_BUSH).pushReaction(PushReaction.DESTROY)));
+    public static final RegistryObject<Block> PINEAPPLE_BUSH = BLOCKS.register("pineapple_bush",
+        () -> new PineappleBushBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("pineapple_bush"))
+            .mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.SWEET_BERRY_BUSH).pushReaction(PushReaction.DESTROY)));
+
     // Block items (each block needs an item form for the inventory / creative tab).
     public static final RegistryObject<Item> PALM_LOG_ITEM = ITEMS.register("palm_log",
-        () -> new BlockItem(PALM_LOG.get(), new Item.Properties().setId(ITEMS.key("palm_log"))));
+        () -> new BlockItem(PALM_LOG.get(), new Item.Properties().setId(ITEMS.key("palm_log")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_PLANKS_ITEM = ITEMS.register("palm_planks",
-        () -> new BlockItem(PALM_PLANKS.get(), new Item.Properties().setId(ITEMS.key("palm_planks"))));
+        () -> new BlockItem(PALM_PLANKS.get(), new Item.Properties().setId(ITEMS.key("palm_planks")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> STRIPPED_PALM_LOG_ITEM = ITEMS.register("stripped_palm_log",
-        () -> new BlockItem(STRIPPED_PALM_LOG.get(), new Item.Properties().setId(ITEMS.key("stripped_palm_log"))));
+        () -> new BlockItem(STRIPPED_PALM_LOG.get(), new Item.Properties().setId(ITEMS.key("stripped_palm_log")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_WOOD_ITEM = ITEMS.register("palm_wood",
-        () -> new BlockItem(PALM_WOOD.get(), new Item.Properties().setId(ITEMS.key("palm_wood"))));
+        () -> new BlockItem(PALM_WOOD.get(), new Item.Properties().setId(ITEMS.key("palm_wood")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> STRIPPED_PALM_WOOD_ITEM = ITEMS.register("stripped_palm_wood",
-        () -> new BlockItem(STRIPPED_PALM_WOOD.get(), new Item.Properties().setId(ITEMS.key("stripped_palm_wood"))));
+        () -> new BlockItem(STRIPPED_PALM_WOOD.get(), new Item.Properties().setId(ITEMS.key("stripped_palm_wood")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_STAIRS_ITEM = ITEMS.register("palm_stairs",
-        () -> new BlockItem(PALM_STAIRS.get(), new Item.Properties().setId(ITEMS.key("palm_stairs"))));
+        () -> new BlockItem(PALM_STAIRS.get(), new Item.Properties().setId(ITEMS.key("palm_stairs")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_SLAB_ITEM = ITEMS.register("palm_slab",
-        () -> new BlockItem(PALM_SLAB.get(), new Item.Properties().setId(ITEMS.key("palm_slab"))));
+        () -> new BlockItem(PALM_SLAB.get(), new Item.Properties().setId(ITEMS.key("palm_slab")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_FENCE_ITEM = ITEMS.register("palm_fence",
-        () -> new BlockItem(PALM_FENCE.get(), new Item.Properties().setId(ITEMS.key("palm_fence"))));
+        () -> new BlockItem(PALM_FENCE.get(), new Item.Properties().setId(ITEMS.key("palm_fence")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_FENCE_GATE_ITEM = ITEMS.register("palm_fence_gate",
-        () -> new BlockItem(PALM_FENCE_GATE.get(), new Item.Properties().setId(ITEMS.key("palm_fence_gate"))));
+        () -> new BlockItem(PALM_FENCE_GATE.get(), new Item.Properties().setId(ITEMS.key("palm_fence_gate")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_DOOR_ITEM = ITEMS.register("palm_door",
-        () -> new BlockItem(PALM_DOOR.get(), new Item.Properties().setId(ITEMS.key("palm_door"))));
+        () -> new BlockItem(PALM_DOOR.get(), new Item.Properties().setId(ITEMS.key("palm_door")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_TRAPDOOR_ITEM = ITEMS.register("palm_trapdoor",
-        () -> new BlockItem(PALM_TRAPDOOR.get(), new Item.Properties().setId(ITEMS.key("palm_trapdoor"))));
+        () -> new BlockItem(PALM_TRAPDOOR.get(), new Item.Properties().setId(ITEMS.key("palm_trapdoor")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_BUTTON_ITEM = ITEMS.register("palm_button",
-        () -> new BlockItem(PALM_BUTTON.get(), new Item.Properties().setId(ITEMS.key("palm_button"))));
+        () -> new BlockItem(PALM_BUTTON.get(), new Item.Properties().setId(ITEMS.key("palm_button")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_PRESSURE_PLATE_ITEM = ITEMS.register("palm_pressure_plate",
-        () -> new BlockItem(PALM_PRESSURE_PLATE.get(), new Item.Properties().setId(ITEMS.key("palm_pressure_plate"))));
+        () -> new BlockItem(PALM_PRESSURE_PLATE.get(), new Item.Properties().setId(ITEMS.key("palm_pressure_plate")).useBlockDescriptionPrefix()));
+
+    // --- Fruits (food that also plants its bush, like sweet berries) ---
+    private static final FoodProperties BANANA_FOOD = new FoodProperties.Builder().nutrition(4).saturationModifier(0.3F).build();
+    private static final FoodProperties PINEAPPLE_FOOD = new FoodProperties.Builder().nutrition(4).saturationModifier(0.3F).build();
+    // Pineapple fills you, but its sour curse saps your strength a while.
+    private static final Consumable PINEAPPLE_CONSUMABLE = Consumables.defaultFood()
+        .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0)))
+        .build();
+
+    public static final RegistryObject<Item> BANANA = ITEMS.register("banana",
+        () -> new BlockItem(BANANA_BUSH.get(), new Item.Properties().setId(ITEMS.key("banana")).food(BANANA_FOOD)));
+    public static final RegistryObject<Item> PINEAPPLE = ITEMS.register("pineapple",
+        () -> new BlockItem(PINEAPPLE_BUSH.get(), new Item.Properties().setId(ITEMS.key("pineapple")).food(PINEAPPLE_FOOD, PINEAPPLE_CONSUMABLE)));
 
     // --- Entities ---
     // Cursed Drowned — the curse's own armed dead (see CursedDrowned); summoned by the night curse.
@@ -237,6 +265,8 @@ public final class OceansCurse {
                 output.accept(PALM_TRAPDOOR_ITEM.get());
                 output.accept(PALM_BUTTON_ITEM.get());
                 output.accept(PALM_PRESSURE_PLATE_ITEM.get());
+                output.accept(BANANA.get());
+                output.accept(PINEAPPLE.get());
             }).build());
 
     public OceansCurse(FMLJavaModLoadingContext context) {

@@ -46,9 +46,11 @@ The mod turns the Minecraft ocean into a living, dangerous, and adventure‑fill
 
 **Milestone v0.2 "Development of the Curse – New Hostile Mobs:"** – due to the curse, new hostile mobs begin to appear: the Cursed Drowned Zombie and the Cursed Skeleton. Features: each mob has 3 weapon variants: common – saber; zombie – chain attack; skeleton – bow with effect arrows. ✅ Done
 
-**Milestone v0.3 "New Blocks and Resources – Preparation for Biomes":** palm wood blocks, banana and pineapple bushes, wood crafting recipes. ⏳ In progress
+**Milestone v0.3 "New Blocks and Resources – Preparation for Biomes":** palm wood blocks, banana and pineapple bushes, wood crafting recipes. ✅ Done
 
-**Milestone v0.4 "New Mobs (Fauna), Drops – Preparation for Biomes":** adding whales, sharks, rays, and sawfish, along with their drops and some crafting ingredients (e.g., for the saber). ⏰ Planned
+**Milestone v0.4 "New Mobs (Fauna), Drops – Preparation for Biomes":** adding whales, sharks, rays, and sawfish, along with their drops and some crafting ingredients (e.g., for the saber). ⏳ In progress
+
+**Slice v0.5 New biome - tropical beach:** Using previously created objects (palm logs, pineapple bushes, bananas, and coconuts) to generate a new biome. Adding missing objects - palm foliage, coconut blocks. ⏰ In the plans
 
 ... and so on (will be expanded).
 
