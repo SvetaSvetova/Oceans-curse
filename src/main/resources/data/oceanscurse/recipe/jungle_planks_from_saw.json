@@ -1,0 +1,6 @@
+﻿{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [ "oceanscurse:saw", "minecraft:jungle_log" ],
+  "result": { "id": "minecraft:jungle_planks", "count": 6 }
+}

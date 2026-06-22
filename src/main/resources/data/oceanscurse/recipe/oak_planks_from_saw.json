@@ -1,0 +1,6 @@
+﻿{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [ "oceanscurse:saw", "minecraft:oak_log" ],
+  "result": { "id": "minecraft:oak_planks", "count": 6 }
+}

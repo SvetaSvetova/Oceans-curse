@@ -13,8 +13,13 @@ import com.oceanscurse.block.StrippableLogBlock;
 import com.oceanscurse.effects.BleedingMobEffect;
 import com.oceanscurse.entity.CursedDrowned;
 import com.oceanscurse.entity.CursedSkeleton;
+import com.oceanscurse.entity.PiranhaEntity;
+import com.oceanscurse.entity.SawfishEntity;
+import com.oceanscurse.entity.SharkEntity;
+import com.oceanscurse.entity.WhaleEntity;
 import com.oceanscurse.items.CursedDoubloonItem;
 import com.oceanscurse.items.CutlassItem;
+import com.oceanscurse.items.SawItem;
 import com.oceanscurse.loot.AddItemModifier;
 import com.oceanscurse.network.OceansNetwork;
 import net.minecraft.core.registries.Registries;
@@ -183,6 +188,54 @@ public final class OceansCurse {
     public static final RegistryObject<Item> PINEAPPLE = ITEMS.register("pineapple",
         () -> new BlockItem(PINEAPPLE_BUSH.get(), new Item.Properties().setId(ITEMS.key("pineapple")).food(PINEAPPLE_FOOD, PINEAPPLE_CONSUMABLE)));
 
+    // --- Shark meat (raw drop) → dried shark (cooked; filling but slows you, as designed) ---
+    private static final FoodProperties SHARK_MEAT_FOOD = new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build();
+    private static final FoodProperties DRIED_SHARK_FOOD = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F).build();
+    private static final Consumable DRIED_SHARK_CONSUMABLE = Consumables.defaultFood()
+        .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SLOWNESS, 200, 0)))
+        .build();
+
+    public static final RegistryObject<Item> SHARK_MEAT = ITEMS.register("shark_meat",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("shark_meat")).food(SHARK_MEAT_FOOD)));
+    public static final RegistryObject<Item> DRIED_SHARK = ITEMS.register("dried_shark",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("dried_shark")).food(DRIED_SHARK_FOOD, DRIED_SHARK_CONSUMABLE)));
+
+    // --- Sawfish meat (raw drop) → cooked sawfish (plain fish food) ---
+    private static final FoodProperties SAWFISH_MEAT_FOOD = new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build();
+    private static final FoodProperties COOKED_SAWFISH_FOOD = new FoodProperties.Builder().nutrition(6).saturationModifier(0.6F).build();
+
+    public static final RegistryObject<Item> SAWFISH_MEAT = ITEMS.register("sawfish_meat",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("sawfish_meat")).food(SAWFISH_MEAT_FOOD)));
+    public static final RegistryObject<Item> COOKED_SAWFISH = ITEMS.register("cooked_sawfish",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("cooked_sawfish")).food(COOKED_SAWFISH_FOOD)));
+
+    // --- Piranha meat (raw drop) → cooked piranha (plain fish food) ---
+    private static final FoodProperties PIRANHA_MEAT_FOOD = new FoodProperties.Builder().nutrition(1).saturationModifier(0.1F).build();
+    private static final FoodProperties COOKED_PIRANHA_FOOD = new FoodProperties.Builder().nutrition(5).saturationModifier(0.6F).build();
+
+    public static final RegistryObject<Item> PIRANHA_MEAT = ITEMS.register("piranha_meat",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("piranha_meat")).food(PIRANHA_MEAT_FOOD)));
+    public static final RegistryObject<Item> COOKED_PIRANHA = ITEMS.register("cooked_piranha",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("cooked_piranha")).food(COOKED_PIRANHA_FOOD)));
+
+    // --- Whale meat (raw drop) → cooked whale (hearty food); whale bone (craft material) ---
+    private static final FoodProperties WHALE_MEAT_FOOD = new FoodProperties.Builder().nutrition(3).saturationModifier(0.3F).build();
+    private static final FoodProperties COOKED_WHALE_FOOD = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F).build();
+
+    public static final RegistryObject<Item> WHALE_MEAT = ITEMS.register("whale_meat",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("whale_meat")).food(WHALE_MEAT_FOOD)));
+    public static final RegistryObject<Item> COOKED_WHALE = ITEMS.register("cooked_whale",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("cooked_whale")).food(COOKED_WHALE_FOOD)));
+    // Whale bone — heavy bone used to haft the abordage cutlass (its only recipe).
+    public static final RegistryObject<Item> WHALE_BONE = ITEMS.register("whale_bone",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("whale_bone"))));
+
+    // --- Saw (from the sawfish): turns 1 log into 6 planks and is given back ---
+    public static final RegistryObject<Item> SAW_BLADE = ITEMS.register("saw_blade",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("saw_blade"))));
+    public static final RegistryObject<Item> SAW = ITEMS.register("saw",
+        () -> new SawItem(new Item.Properties().setId(ITEMS.key("saw")).durability(16)));
+
     // --- Entities ---
     // Cursed Drowned — the curse's own armed dead (see CursedDrowned); summoned by the night curse.
     public static final RegistryObject<EntityType<CursedDrowned>> CURSED_DROWNED = ENTITY_TYPES.register("cursed_drowned",
@@ -196,11 +249,43 @@ public final class OceansCurse {
             .sized(0.6F, 1.99F)
             .build(ENTITY_TYPES.key("cursed_skeleton")));
 
+    // Shark — a hostile sea predator (see SharkEntity), reuses the dolphin body.
+    public static final RegistryObject<EntityType<SharkEntity>> SHARK = ENTITY_TYPES.register("shark",
+        () -> EntityType.Builder.<SharkEntity>of(SharkEntity::new, MobCategory.WATER_CREATURE)
+            .sized(0.9F, 0.7F)
+            .build(ENTITY_TYPES.key("shark")));
+
+    // Sawfish — a sea fish (reuses the cod body); drops the saw blade (see SawfishEntity).
+    public static final RegistryObject<EntityType<SawfishEntity>> SAWFISH = ENTITY_TYPES.register("sawfish",
+        () -> EntityType.Builder.<SawfishEntity>of(SawfishEntity::new, MobCategory.WATER_CREATURE)
+            .sized(0.5F, 0.3F)
+            .build(ENTITY_TYPES.key("sawfish")));
+
+    // Piranha — a small hostile schooling fish (reuses the cod body; see PiranhaEntity).
+    public static final RegistryObject<EntityType<PiranhaEntity>> PIRANHA = ENTITY_TYPES.register("piranha",
+        () -> EntityType.Builder.<PiranhaEntity>of(PiranhaEntity::new, MobCategory.WATER_CREATURE)
+            .sized(0.5F, 0.4F)
+            .build(ENTITY_TYPES.key("piranha")));
+
+    // Whale — a large peaceful sea giant with a custom Blockbench model (see WhaleEntity).
+    public static final RegistryObject<EntityType<WhaleEntity>> WHALE = ENTITY_TYPES.register("whale",
+        () -> EntityType.Builder.<WhaleEntity>of(WhaleEntity::new, MobCategory.WATER_CREATURE)
+            .sized(3.0F, 2.5F)
+            .build(ENTITY_TYPES.key("whale")));
+
     // --- Spawn eggs (creative-tab convenience) ---
     public static final RegistryObject<Item> CURSED_DROWNED_SPAWN_EGG = ITEMS.register("cursed_drowned_spawn_egg",
         () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("cursed_drowned_spawn_egg")).spawnEgg(CURSED_DROWNED.get())));
     public static final RegistryObject<Item> CURSED_SKELETON_SPAWN_EGG = ITEMS.register("cursed_skeleton_spawn_egg",
         () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("cursed_skeleton_spawn_egg")).spawnEgg(CURSED_SKELETON.get())));
+    public static final RegistryObject<Item> SHARK_SPAWN_EGG = ITEMS.register("shark_spawn_egg",
+        () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("shark_spawn_egg")).spawnEgg(SHARK.get())));
+    public static final RegistryObject<Item> SAWFISH_SPAWN_EGG = ITEMS.register("sawfish_spawn_egg",
+        () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("sawfish_spawn_egg")).spawnEgg(SAWFISH.get())));
+    public static final RegistryObject<Item> PIRANHA_SPAWN_EGG = ITEMS.register("piranha_spawn_egg",
+        () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("piranha_spawn_egg")).spawnEgg(PIRANHA.get())));
+    public static final RegistryObject<Item> WHALE_SPAWN_EGG = ITEMS.register("whale_spawn_egg",
+        () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("whale_spawn_egg")).spawnEgg(WHALE.get())));
     public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS =
         DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
 
@@ -252,6 +337,12 @@ public final class OceansCurse {
                 output.accept(COCONUT.get());
                 output.accept(CURSED_DROWNED_SPAWN_EGG.get());
                 output.accept(CURSED_SKELETON_SPAWN_EGG.get());
+                output.accept(SHARK_SPAWN_EGG.get());
+                output.accept(SAWFISH_SPAWN_EGG.get());
+                output.accept(PIRANHA_SPAWN_EGG.get());
+                output.accept(WHALE_SPAWN_EGG.get());
+                output.accept(SAW_BLADE.get());
+                output.accept(SAW.get());
                 output.accept(PALM_LOG_ITEM.get());
                 output.accept(STRIPPED_PALM_LOG_ITEM.get());
                 output.accept(PALM_WOOD_ITEM.get());
@@ -267,6 +358,15 @@ public final class OceansCurse {
                 output.accept(PALM_PRESSURE_PLATE_ITEM.get());
                 output.accept(BANANA.get());
                 output.accept(PINEAPPLE.get());
+                output.accept(SHARK_MEAT.get());
+                output.accept(DRIED_SHARK.get());
+                output.accept(SAWFISH_MEAT.get());
+                output.accept(COOKED_SAWFISH.get());
+                output.accept(PIRANHA_MEAT.get());
+                output.accept(COOKED_PIRANHA.get());
+                output.accept(WHALE_MEAT.get());
+                output.accept(COOKED_WHALE.get());
+                output.accept(WHALE_BONE.get());
             }).build());
 
     public OceansCurse(FMLJavaModLoadingContext context) {
@@ -314,5 +414,9 @@ public final class OceansCurse {
     private void onAttributeCreation(final EntityAttributeCreationEvent event) {
         event.put(CURSED_DROWNED.get(), CursedDrowned.createAttributes().build());
         event.put(CURSED_SKELETON.get(), CursedSkeleton.createAttributes().build());
+        event.put(SHARK.get(), SharkEntity.createAttributes().build());
+        event.put(SAWFISH.get(), SawfishEntity.createAttributes().build());
+        event.put(PIRANHA.get(), PiranhaEntity.createAttributes().build());
+        event.put(WHALE.get(), WhaleEntity.createAttributes().build());
     }
 }

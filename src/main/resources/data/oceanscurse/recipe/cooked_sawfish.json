@@ -1,0 +1,7 @@
+﻿{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "experience": 0.35,
+  "ingredient": "oceanscurse:sawfish_meat",
+  "result": { "id": "oceanscurse:cooked_sawfish" }
+}

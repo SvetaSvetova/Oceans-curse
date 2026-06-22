@@ -96,20 +96,22 @@ The mod turns the Minecraft ocean into a living, dangerous, and adventure‑fill
 | **Cursed Sea** | Black water, grey sky, bubbles | Black resin (replaces coal) |
 | **Iceberg** | Blue ice, cold waters | Frost wood, cryolite |
 | **Treasure Island** | Small island with a killer tree | Treasure chest (always) |
-| **Deep Ocean** | Depth > 30 blocks, spawns whales and sharks | Whale bone, shark scale |
+| **Deep Ocean** | Depth > 30 blocks, spawns whales and sharks | Whale bone, shark meat |
 
 ### Mobs
 | Mob | Type | Behaviour | Drops |
 |-----|------|-----------|-------|
-| **Whale** | Neutral | Swims by, spouts water | Whale bone, whale baleen |
-| **Shark** | Aggressive (when HP < 50%) | Attacks when bleeding | Shark scale, fin |
-| **Sawfish** | Aggressive | Attacks near eggs | Saw (speeds up plank cutting) |
-| **Electric Ray** | Neutral | Deals electric damage when stepped on | Electric spine |
+| **Whale** | Neutral | Swims by, spouts water | Whale meat (food), whale bone (for the saber), baleen (sails, V2) |
+| **Shark** | Aggressive (when HP < 50%) | Attacks when bleeding | Shark meat → dried shark |
+| **Piranha** | Aggressive (school) | Attacks in schools in water | Piranha meat → cooked piranha |
+| **Sawfish** | Aggressive | Attacks near eggs | Sawfish meat → cooked; saw blade → **Saw** (1 log → 6 planks) |
+| **Electric Ray** | Neutral | Deals electric damage when stepped on | Ray meat → cooked; electric spike → **Spikes** block (trap/mob farm) |
 | **Siren** | Hostile | Lures players into water with singing | Siren pearl |
 | **Cursed Drowned Zombie & Skeleton** | Hostile | Each mob attacks with one of: 1. Saber attack (both). 2. Chain attack that pulls the player (zombie). 3. Bow with effect arrows (skeleton). | Chain link (zombie), effect arrows (skeleton), doubloons, saber |
 | **Bosun** | Hostile | Uses shield, buffs pirates | Saber, doubloons |
 | **Gunner** | Hostile | Shoots musket, throws bombs | Musket, gunpowder |
 
+> **Fish drop principle:** every fish drops **food** (raw meat → cooked in a furnace/smoker), and a special material is added **only if it has a crafting use** (saw blade → Saw, whale bone → saber, electric spike → Spikes block). 
 ### Structures
 - **Corvette** – small stranded ship (1 chest).
 - **Galleon** – wrecked ship in the ocean (3 chests, cryolite).
@@ -130,11 +132,12 @@ The mod turns the Minecraft ocean into a living, dangerous, and adventure‑fill
 
 ### Food
 - **Coconut** – restores 1 hunger / crafts coconut milk.
-- **Pineapple** – restores 1 hunger.
-- **Banana** – restores 1 hunger.
+- **Pineapple** – filling, but inflicts weakness.
+- **Banana** – restores hunger.
 - **Pirate Biscuit** – restores 1 hunger.
 - **Coconut Milk** – removes poison effect.
-- **Dried Shark** – restores 3 hunger.
+- **Shark Meat → Dried Shark** – raw → cooked (dried is filling but inflicts slowness for 10s).
+- **Sawfish Meat → Cooked Sawfish** – raw → cooked (plain fish food). Same for piranha, ray, and whale meat.
 
 ---
 

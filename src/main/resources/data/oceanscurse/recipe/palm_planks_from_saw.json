@@ -1,0 +1,6 @@
+﻿{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [ "oceanscurse:saw", "oceanscurse:palm_log" ],
+  "result": { "id": "oceanscurse:palm_planks", "count": 6 }
+}
