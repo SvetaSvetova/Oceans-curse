@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "boat",
+  "pattern": [
+    "P P",
+    "PPP"
+  ],
+  "key": {
+    "P": "oceanscurse:palm_planks"
+  },
+  "result": { "id": "oceanscurse:palm_boat", "count": 1 }
+}

@@ -60,3 +60,11 @@ tasks.withType(JavaCompile).configureEach {
     // This is done by default in Java 18+, but this ensures it no matter the Java or Gradle version
     options.encoding = 'UTF-8'
 }
+
+// The project lives under OneDrive, which dehydrates files in build/ into cloud placeholders
+// mid-build. Gradle's up-to-date state tracking then fails to MD5-hash the (now-missing) outputs
+// of processResources. Disabling state tracking for this task skips that hashing so the build is
+// resilient to OneDrive's syncing.
+tasks.named('processResources') {
+    doNotTrackState('build/ is under OneDrive, whose syncing breaks output state tracking')
+}

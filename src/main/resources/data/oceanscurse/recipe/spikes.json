@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "SS",
+    "II"
+  ],
+  "key": {
+    "S": "oceanscurse:electric_spike",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": { "id": "oceanscurse:spikes", "count": 2 }
+}

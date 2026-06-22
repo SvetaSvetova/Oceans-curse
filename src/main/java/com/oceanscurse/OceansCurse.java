@@ -9,11 +9,13 @@ import com.oceanscurse.curse.KarmaEvents;
 import com.oceanscurse.curse.NightCurse;
 import com.oceanscurse.block.BananaBushBlock;
 import com.oceanscurse.block.PineappleBushBlock;
+import com.oceanscurse.block.SpikesBlock;
 import com.oceanscurse.block.StrippableLogBlock;
 import com.oceanscurse.effects.BleedingMobEffect;
 import com.oceanscurse.entity.CursedDrowned;
 import com.oceanscurse.entity.CursedSkeleton;
 import com.oceanscurse.entity.PiranhaEntity;
+import com.oceanscurse.entity.RayEntity;
 import com.oceanscurse.entity.SawfishEntity;
 import com.oceanscurse.entity.SharkEntity;
 import com.oceanscurse.entity.WhaleEntity;
@@ -30,6 +32,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.Consumables;
@@ -44,6 +47,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BoatItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.ToolMaterial;
@@ -147,6 +151,11 @@ public final class OceansCurse {
         () -> new PineappleBushBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("pineapple_bush"))
             .mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.SWEET_BERRY_BUSH).pushReaction(PushReaction.DESTROY)));
 
+    // Spikes — an electrified trap plate (crafted from the ray's electric spike); hurts whatever stands on it.
+    public static final RegistryObject<Block> SPIKES = BLOCKS.register("spikes",
+        () -> new SpikesBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("spikes"))
+            .mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
+
     // Block items (each block needs an item form for the inventory / creative tab).
     public static final RegistryObject<Item> PALM_LOG_ITEM = ITEMS.register("palm_log",
         () -> new BlockItem(PALM_LOG.get(), new Item.Properties().setId(ITEMS.key("palm_log")).useBlockDescriptionPrefix()));
@@ -218,6 +227,20 @@ public final class OceansCurse {
     public static final RegistryObject<Item> COOKED_PIRANHA = ITEMS.register("cooked_piranha",
         () -> new Item(new Item.Properties().setId(ITEMS.key("cooked_piranha")).food(COOKED_PIRANHA_FOOD)));
 
+    // --- Ray meat (raw drop) → cooked ray (plain fish food); electric spike → Spikes block ---
+    private static final FoodProperties RAY_MEAT_FOOD = new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build();
+    private static final FoodProperties COOKED_RAY_FOOD = new FoodProperties.Builder().nutrition(6).saturationModifier(0.6F).build();
+
+    public static final RegistryObject<Item> RAY_MEAT = ITEMS.register("ray_meat",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("ray_meat")).food(RAY_MEAT_FOOD)));
+    public static final RegistryObject<Item> COOKED_RAY = ITEMS.register("cooked_ray",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("cooked_ray")).food(COOKED_RAY_FOOD)));
+    // Electric spike — the ray's barb; crafted (with iron) into the Spikes trap block.
+    public static final RegistryObject<Item> ELECTRIC_SPIKE = ITEMS.register("electric_spike",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("electric_spike"))));
+    public static final RegistryObject<Item> SPIKES_ITEM = ITEMS.register("spikes",
+        () -> new BlockItem(SPIKES.get(), new Item.Properties().setId(ITEMS.key("spikes")).useBlockDescriptionPrefix()));
+
     // --- Whale meat (raw drop) → cooked whale (hearty food); whale bone (craft material) ---
     private static final FoodProperties WHALE_MEAT_FOOD = new FoodProperties.Builder().nutrition(3).saturationModifier(0.3F).build();
     private static final FoodProperties COOKED_WHALE_FOOD = new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F).build();
@@ -270,8 +293,25 @@ public final class OceansCurse {
     // Whale — a large peaceful sea giant with a custom Blockbench model (see WhaleEntity).
     public static final RegistryObject<EntityType<WhaleEntity>> WHALE = ENTITY_TYPES.register("whale",
         () -> EntityType.Builder.<WhaleEntity>of(WhaleEntity::new, MobCategory.WATER_CREATURE)
-            .sized(3.0F, 2.5F)
+            .sized(5.0F, 4.0F)
             .build(ENTITY_TYPES.key("whale")));
+
+    // Ray — a flat peaceful bottom-glider with a custom Blockbench model (see RayEntity).
+    public static final RegistryObject<EntityType<RayEntity>> RAY = ENTITY_TYPES.register("ray",
+        () -> EntityType.Builder.<RayEntity>of(RayEntity::new, MobCategory.WATER_CREATURE)
+            .sized(2.5F, 0.8F)
+            .build(ENTITY_TYPES.key("ray")));
+
+    // Palm Boat — a rideable boat made of palm wood (vanilla Boat entity). Its drop item (palm_boat) is
+    // looked up from the registry at spawn time to avoid a circular field reference with PALM_BOAT_ITEM.
+    public static final RegistryObject<EntityType<Boat>> PALM_BOAT = ENTITY_TYPES.register("palm_boat",
+        () -> EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level,
+                () -> ForgeRegistries.ITEMS.getValue(net.minecraft.resources.Identifier.fromNamespaceAndPath(MODID, "palm_boat"))), MobCategory.MISC)
+            .noLootTable()
+            .sized(1.375F, 0.5625F)
+            .eyeHeight(0.5625F)
+            .clientTrackingRange(10)
+            .build(ENTITY_TYPES.key("palm_boat")));
 
     // --- Spawn eggs (creative-tab convenience) ---
     public static final RegistryObject<Item> CURSED_DROWNED_SPAWN_EGG = ITEMS.register("cursed_drowned_spawn_egg",
@@ -286,6 +326,13 @@ public final class OceansCurse {
         () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("piranha_spawn_egg")).spawnEgg(PIRANHA.get())));
     public static final RegistryObject<Item> WHALE_SPAWN_EGG = ITEMS.register("whale_spawn_egg",
         () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("whale_spawn_egg")).spawnEgg(WHALE.get())));
+    public static final RegistryObject<Item> RAY_SPAWN_EGG = ITEMS.register("ray_spawn_egg",
+        () -> new SpawnEggItem(new Item.Properties().setId(ITEMS.key("ray_spawn_egg")).spawnEgg(RAY.get())));
+
+    // Palm Boat item — places the PALM_BOAT entity. Declared after the entity so the .get() reference
+    // is a legal backward reference (the entity looks its drop item up from the registry, breaking the cycle).
+    public static final RegistryObject<Item> PALM_BOAT_ITEM = ITEMS.register("palm_boat",
+        () -> new BoatItem(PALM_BOAT.get(), new Item.Properties().setId(ITEMS.key("palm_boat")).stacksTo(1)));
     public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS =
         DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
 
@@ -341,6 +388,7 @@ public final class OceansCurse {
                 output.accept(SAWFISH_SPAWN_EGG.get());
                 output.accept(PIRANHA_SPAWN_EGG.get());
                 output.accept(WHALE_SPAWN_EGG.get());
+                output.accept(RAY_SPAWN_EGG.get());
                 output.accept(SAW_BLADE.get());
                 output.accept(SAW.get());
                 output.accept(PALM_LOG_ITEM.get());
@@ -356,6 +404,7 @@ public final class OceansCurse {
                 output.accept(PALM_TRAPDOOR_ITEM.get());
                 output.accept(PALM_BUTTON_ITEM.get());
                 output.accept(PALM_PRESSURE_PLATE_ITEM.get());
+                output.accept(PALM_BOAT_ITEM.get());
                 output.accept(BANANA.get());
                 output.accept(PINEAPPLE.get());
                 output.accept(SHARK_MEAT.get());
@@ -367,6 +416,10 @@ public final class OceansCurse {
                 output.accept(WHALE_MEAT.get());
                 output.accept(COOKED_WHALE.get());
                 output.accept(WHALE_BONE.get());
+                output.accept(RAY_MEAT.get());
+                output.accept(COOKED_RAY.get());
+                output.accept(ELECTRIC_SPIKE.get());
+                output.accept(SPIKES_ITEM.get());
             }).build());
 
     public OceansCurse(FMLJavaModLoadingContext context) {
@@ -418,5 +471,6 @@ public final class OceansCurse {
         event.put(SAWFISH.get(), SawfishEntity.createAttributes().build());
         event.put(PIRANHA.get(), PiranhaEntity.createAttributes().build());
         event.put(WHALE.get(), WhaleEntity.createAttributes().build());
+        event.put(RAY.get(), RayEntity.createAttributes().build());
     }
 }

@@ -36,11 +36,11 @@ The mod turns the Minecraft ocean into a living, dangerous, and adventure‑fill
 
 ## 📌 Current Status and Development Approach
 
-> This section reflects the **actual** state of the project. Sections below describe the full vision (we are still heading there).
+> This section reflects the **actual** state of the project. Sections below describe the full vision.
 
 **Platform:** Minecraft **26.2** / Forge **26.2‑65.0.0** / **Java 25**, built with Gradle Wrapper.
 
-**Approach:** The mod is large; we are not doing everything at once. We go step‑by‑step from version to version. The goal is a real release on CurseForge.
+**Approach:** The mod is large; we are not doing everything at once. We go step‑by‑step. The goal is a real release on CurseForge.
 
 **Milestone v0.1 "Core of the Curse" – loop:** find cursed doubloons → fight off monsters that appear because of the curse with a saber → decide: hoard gold (dark karma) or return it to the sea to cleanse (light karma). ✅ Done
 
@@ -48,11 +48,19 @@ The mod turns the Minecraft ocean into a living, dangerous, and adventure‑fill
 
 **Milestone v0.3 "New Blocks and Resources – Preparation for Biomes":** palm wood blocks, banana and pineapple bushes, wood crafting recipes. ✅ Done
 
-**Milestone v0.4 "New Mobs (Fauna), Drops – Preparation for Biomes":** adding whales, sharks, rays, and sawfish, along with their drops and some crafting ingredients (e.g., for the saber). ⏳ In progress
+**Milestone v0.4 "New Mobs (Fauna), Drops – Preparation for Biomes":** adding whales, sharks, piranhas, rays, and sawfish, along with their drops and some crafting ingredients (e.g., for the saber), plus a spikes block (trap) and a palm boat. ✅ Done
 
-**Slice v0.5 New biome - tropical beach:** Using previously created objects (palm logs, pineapple bushes, bananas, and coconuts) to generate a new biome. Adding missing objects - palm foliage, coconut blocks. ⏰ In the plans
+**Slice v0.5 Light biomes:** all the simple biomes at once — Tropical Beach (palm tree growth, foliage, coconut block), Deep Ocean (whales and sharks spawning at depth), and Cursed Sea. This is also where we learn the worldgen pipeline itself on already-built objects (palm logs, bushes, fauna). ⏳ In progress
 
-... and so on (will be expanded).
+**Slice v0.6 Pirate items and decor:** barrels, cannons, ropes, lanterns, rum, flags, a ship's wheel, pirate armor — props and gear. Built before the dungeons so it can be used to decorate them. Plus a use for cleansed doubloons. ⏰ In the plans
+
+**Slice v0.7 Dungeons and structures:** a sunken pirate ship, island stashes, underwater caves, and the Sea Altar — built on the ready pirate decor. Inside: cursed doubloons and treasure. ⏰ In the plans
+
+**Slice v0.8 Hard biome - Treasure Island:** a small island with a killer tree and a guaranteed treasure chest (a biome-structure). ⏰ In the plans
+
+**Slice v0.9 Hard biome - Ice Iceberg + polish:** blue ice, frost wood, and cryolite (a new biome). ⏰ In the plans
+
+**Release v1.0 "Awakening of the Ocean" (V1):** final polish — sounds, advancements, balancing, a guide, and CurseForge page prep. ⏰ In the plans
 
 ---
 
