@@ -1,0 +1,10 @@
+{
+  "layers": {
+    "humanoid": [
+      { "texture": "oceanscurse:pirate" }
+    ],
+    "humanoid_leggings": [
+      { "texture": "oceanscurse:pirate" }
+    ]
+  }
+}

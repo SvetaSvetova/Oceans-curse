@@ -9,8 +9,12 @@ import com.oceanscurse.curse.KarmaEvents;
 import com.oceanscurse.curse.NightCurse;
 import com.oceanscurse.block.BananaBushBlock;
 import com.oceanscurse.block.PineappleBushBlock;
+import com.oceanscurse.block.CoconutsBlock;
+import com.oceanscurse.block.PalmSaplingBlock;
+import com.oceanscurse.block.RopeBlock;
 import com.oceanscurse.block.SpikesBlock;
 import com.oceanscurse.block.StrippableLogBlock;
+import com.oceanscurse.world.OceansWorldgen;
 import com.oceanscurse.effects.BleedingMobEffect;
 import com.oceanscurse.entity.CursedDrowned;
 import com.oceanscurse.entity.CursedSkeleton;
@@ -22,10 +26,20 @@ import com.oceanscurse.entity.WhaleEntity;
 import com.oceanscurse.items.CursedDoubloonItem;
 import com.oceanscurse.items.CutlassItem;
 import com.oceanscurse.items.SawItem;
+import com.oceanscurse.items.SeafarerBootsHandler;
 import com.oceanscurse.loot.AddItemModifier;
 import com.oceanscurse.network.OceansNetwork;
+import java.util.Map;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,6 +54,7 @@ import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -56,11 +71,14 @@ import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.LanternBlock;
+import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TintedParticleLeavesBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -151,6 +169,44 @@ public final class OceansCurse {
         () -> new PineappleBushBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("pineapple_bush"))
             .mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.SWEET_BERRY_BUSH).pushReaction(PushReaction.DESTROY)));
 
+    // Palm leaves — biome-tinted leaves for the palm tree (decay normally; the foliage of PALM_TREE).
+    public static final RegistryObject<Block> PALM_LEAVES = BLOCKS.register("palm_leaves",
+        () -> new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_leaves"))
+            .mapColor(MapColor.PLANT).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().ignitedByLava()
+            .isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false).pushReaction(PushReaction.DESTROY)));
+
+    // Palm sapling — grows the palm tree (see OceansWorldgen.PALM_GROWER).
+    public static final RegistryObject<Block> PALM_SAPLING = BLOCKS.register("palm_sapling",
+        () -> new PalmSaplingBlock(OceansWorldgen.PALM_GROWER, BlockBehaviour.Properties.of().setId(BLOCKS.key("palm_sapling"))
+            .mapColor(MapColor.PLANT).noCollision().randomTicks().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.DESTROY)));
+
+    // Coconuts — a cluster that hangs under palm leaves; drops coconut food (see CoconutsBlock).
+    public static final RegistryObject<Block> COCONUTS = BLOCKS.register("coconuts",
+        () -> new CoconutsBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("coconuts"))
+            .mapColor(MapColor.DIRT).strength(0.4F).sound(SoundType.WOOD).noOcclusion().pushReaction(PushReaction.DESTROY)));
+
+    // --- Pirate decor blocks ---
+    // Rope — a climbable hanging strand (ship rigging / descending into holds).
+    public static final RegistryObject<Block> ROPE = BLOCKS.register("rope",
+        () -> new RopeBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("rope"))
+            .strength(0.4F).sound(SoundType.WOOL).noOcclusion().noCollision().pushReaction(PushReaction.DESTROY)));
+
+    // Ship lantern — a bright hanging/standing light (reuses the vanilla lantern).
+    public static final RegistryObject<Block> SHIP_LANTERN = BLOCKS.register("ship_lantern",
+        () -> new LanternBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("ship_lantern"))
+            .mapColor(MapColor.METAL).strength(3.5F).sound(SoundType.LANTERN).lightLevel(s -> 15).noOcclusion().requiresCorrectToolForDrops().pushReaction(PushReaction.DESTROY)));
+
+    // Powder barrel — a keg of gunpowder; light it (flint & steel / flaming arrow) or chain it off
+    // another blast and it explodes. A dungeon trap (reuses vanilla TNT behaviour).
+    public static final RegistryObject<Block> POWDER_BARREL = BLOCKS.register("powder_barrel",
+        () -> new TntBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("powder_barrel"))
+            .mapColor(MapColor.WOOD).instabreak().sound(SoundType.WOOD)));
+
+    // Doubloon block — nine cleansed doubloons packed into a treasure block (storage + dungeon decor).
+    public static final RegistryObject<Block> DOUBLOON_BLOCK = BLOCKS.register("doubloon_block",
+        () -> new Block(BlockBehaviour.Properties.of().setId(BLOCKS.key("doubloon_block"))
+            .mapColor(MapColor.GOLD).instrument(NoteBlockInstrument.BELL).strength(3.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+
     // Spikes — an electrified trap plate (crafted from the ray's electric spike); hurts whatever stands on it.
     public static final RegistryObject<Block> SPIKES = BLOCKS.register("spikes",
         () -> new SpikesBlock(BlockBehaviour.Properties.of().setId(BLOCKS.key("spikes"))
@@ -183,6 +239,20 @@ public final class OceansCurse {
         () -> new BlockItem(PALM_BUTTON.get(), new Item.Properties().setId(ITEMS.key("palm_button")).useBlockDescriptionPrefix()));
     public static final RegistryObject<Item> PALM_PRESSURE_PLATE_ITEM = ITEMS.register("palm_pressure_plate",
         () -> new BlockItem(PALM_PRESSURE_PLATE.get(), new Item.Properties().setId(ITEMS.key("palm_pressure_plate")).useBlockDescriptionPrefix()));
+    public static final RegistryObject<Item> PALM_LEAVES_ITEM = ITEMS.register("palm_leaves",
+        () -> new BlockItem(PALM_LEAVES.get(), new Item.Properties().setId(ITEMS.key("palm_leaves")).useBlockDescriptionPrefix()));
+    public static final RegistryObject<Item> PALM_SAPLING_ITEM = ITEMS.register("palm_sapling",
+        () -> new BlockItem(PALM_SAPLING.get(), new Item.Properties().setId(ITEMS.key("palm_sapling")).useBlockDescriptionPrefix()));
+    public static final RegistryObject<Item> COCONUTS_ITEM = ITEMS.register("coconuts",
+        () -> new BlockItem(COCONUTS.get(), new Item.Properties().setId(ITEMS.key("coconuts")).useBlockDescriptionPrefix()));
+    public static final RegistryObject<Item> DOUBLOON_BLOCK_ITEM = ITEMS.register("doubloon_block",
+        () -> new BlockItem(DOUBLOON_BLOCK.get(), new Item.Properties().setId(ITEMS.key("doubloon_block")).useBlockDescriptionPrefix()));
+    public static final RegistryObject<Item> ROPE_ITEM = ITEMS.register("rope",
+        () -> new BlockItem(ROPE.get(), new Item.Properties().setId(ITEMS.key("rope")).useBlockDescriptionPrefix()));
+    public static final RegistryObject<Item> SHIP_LANTERN_ITEM = ITEMS.register("ship_lantern",
+        () -> new BlockItem(SHIP_LANTERN.get(), new Item.Properties().setId(ITEMS.key("ship_lantern")).useBlockDescriptionPrefix()));
+    public static final RegistryObject<Item> POWDER_BARREL_ITEM = ITEMS.register("powder_barrel",
+        () -> new BlockItem(POWDER_BARREL.get(), new Item.Properties().setId(ITEMS.key("powder_barrel")).useBlockDescriptionPrefix()));
 
     // --- Fruits (food that also plants its bush, like sweet berries) ---
     private static final FoodProperties BANANA_FOOD = new FoodProperties.Builder().nutrition(4).saturationModifier(0.3F).build();
@@ -370,6 +440,28 @@ public final class OceansCurse {
             .setId(ITEMS.key("coconut"))
             .food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.3F).build())));
 
+    // --- Pirate armour set (light, leather-tier; worn texture = assets/oceanscurse/equipment/pirate.json) ---
+    private static final ResourceKey<EquipmentAsset> PIRATE_ASSET =
+        ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, "pirate"));
+    private static final ArmorMaterial PIRATE_ARMOR = new ArmorMaterial(
+        8,                                                   // durability multiplier (helmet 88 / chest 128 / boots 104)
+        Map.of(ArmorType.HELMET, 2, ArmorType.CHESTPLATE, 4, ArmorType.LEGGINGS, 3, ArmorType.BOOTS, 2),
+        12,                                                  // enchantability
+        SoundEvents.ARMOR_EQUIP_LEATHER,
+        0.0F, 0.0F,                                          // toughness, knockback resistance
+        ItemTags.REPAIRS_LEATHER_ARMOR,                      // repaired with leather
+        PIRATE_ASSET);
+
+    public static final RegistryObject<Item> PIRATE_TRICORN = ITEMS.register("pirate_tricorn",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("pirate_tricorn")).humanoidArmor(PIRATE_ARMOR, ArmorType.HELMET)));
+    public static final RegistryObject<Item> PIRATE_COAT = ITEMS.register("pirate_coat",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("pirate_coat")).humanoidArmor(PIRATE_ARMOR, ArmorType.CHESTPLATE)));
+    public static final RegistryObject<Item> PIRATE_LEGGINGS = ITEMS.register("pirate_leggings",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("pirate_leggings")).humanoidArmor(PIRATE_ARMOR, ArmorType.LEGGINGS)));
+    // Seafarer's boots — the "flippers": enchanted boots that speed you through water (effect added separately).
+    public static final RegistryObject<Item> SEAFARER_BOOTS = ITEMS.register("seafarer_boots",
+        () -> new Item(new Item.Properties().setId(ITEMS.key("seafarer_boots")).humanoidArmor(PIRATE_ARMOR, ArmorType.BOOTS)));
+
     // --- Creative tab ---
     // Our own creative tab, shown right before the Combat tab, using the doubloon as its icon.
     public static final RegistryObject<CreativeModeTab> OCEANS_CURSE_TAB = CREATIVE_MODE_TABS.register("oceans_curse_tab",
@@ -380,7 +472,15 @@ public final class OceansCurse {
             .displayItems((params, output) -> {
                 output.accept(CURSED_DOUBLOON.get());
                 output.accept(CLEANSED_DOUBLOON.get());
+                output.accept(DOUBLOON_BLOCK_ITEM.get());
+                output.accept(ROPE_ITEM.get());
+                output.accept(SHIP_LANTERN_ITEM.get());
+                output.accept(POWDER_BARREL_ITEM.get());
                 output.accept(ABORDAGE_CUTLASS.get());
+                output.accept(PIRATE_TRICORN.get());
+                output.accept(PIRATE_COAT.get());
+                output.accept(PIRATE_LEGGINGS.get());
+                output.accept(SEAFARER_BOOTS.get());
                 output.accept(COCONUT.get());
                 output.accept(CURSED_DROWNED_SPAWN_EGG.get());
                 output.accept(CURSED_SKELETON_SPAWN_EGG.get());
@@ -404,6 +504,9 @@ public final class OceansCurse {
                 output.accept(PALM_TRAPDOOR_ITEM.get());
                 output.accept(PALM_BUTTON_ITEM.get());
                 output.accept(PALM_PRESSURE_PLATE_ITEM.get());
+                output.accept(PALM_SAPLING_ITEM.get());
+                output.accept(PALM_LEAVES_ITEM.get());
+                output.accept(COCONUTS_ITEM.get());
                 output.accept(PALM_BOAT_ITEM.get());
                 output.accept(BANANA.get());
                 output.accept(PINEAPPLE.get());
@@ -450,6 +553,8 @@ public final class OceansCurse {
         PlayerEvent.PlayerChangedDimensionEvent.BUS.addListener(KarmaEvents::onChangedDimension);
         RegisterCommandsEvent.BUS.addListener(CurseCommand::register);
         TickEvent.ServerTickEvent.Post.BUS.addListener(NightCurse::onServerTick);
+        // Seafarer's boots: Dolphin's Grace while worn in water.
+        LivingEvent.LivingTickEvent.BUS.addListener(SeafarerBootsHandler::onLivingTick);
 
         // Client-only HUD. Guarded so a dedicated server never loads client classes.
         if (FMLEnvironment.dist == Dist.CLIENT) {

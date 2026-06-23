@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S",
+    "S",
+    "S"
+  ],
+  "key": { "S": "minecraft:string" },
+  "result": { "id": "oceanscurse:rope", "count": 3 }
+}

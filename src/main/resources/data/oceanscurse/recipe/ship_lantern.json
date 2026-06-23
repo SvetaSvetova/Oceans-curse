@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NNN",
+    "NTN",
+    "NNN"
+  ],
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "T": "minecraft:torch"
+  },
+  "result": { "id": "oceanscurse:ship_lantern" }
+}

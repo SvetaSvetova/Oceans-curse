@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "L L",
+    "LDL"
+  ],
+  "key": {
+    "L": "minecraft:leather",
+    "D": "oceanscurse:cleansed_doubloon"
+  },
+  "result": { "id": "oceanscurse:seafarer_boots" }
+}

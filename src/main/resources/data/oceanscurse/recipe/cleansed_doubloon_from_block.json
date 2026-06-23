@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [ "oceanscurse:doubloon_block" ],
+  "result": { "id": "oceanscurse:cleansed_doubloon", "count": 9 }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": [
+    "minecraft:warm_ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_lukewarm_ocean"
+  ],
+  "spawners": [
+    { "type": "oceanscurse:ray", "weight": 8, "minCount": 1, "maxCount": 2 },
+    { "type": "oceanscurse:sawfish", "weight": 8, "minCount": 1, "maxCount": 2 },
+    { "type": "oceanscurse:piranha", "weight": 10, "minCount": 2, "maxCount": 4 }
+  ]
+}

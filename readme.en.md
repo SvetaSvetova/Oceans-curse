@@ -50,9 +50,9 @@ The mod turns the Minecraft ocean into a living, dangerous, and adventure‑fill
 
 **Milestone v0.4 "New Mobs (Fauna), Drops – Preparation for Biomes":** adding whales, sharks, piranhas, rays, and sawfish, along with their drops and some crafting ingredients (e.g., for the saber), plus a spikes block (trap) and a palm boat. ✅ Done
 
-**Slice v0.5 Light biomes:** all the simple biomes at once — Tropical Beach (palm tree growth, foliage, coconut block), Deep Ocean (whales and sharks spawning at depth), and Cursed Sea. This is also where we learn the worldgen pipeline itself on already-built objects (palm logs, bushes, fauna). ⏳ In progress
+**Slice v0.5 Light biomes:** all the simple biomes at once — Tropical Beach (palm tree growth, foliage, coconut block), Deep Ocean (whales and sharks spawning at depth), and Cursed Sea. This is also where we learn the worldgen pipeline itself on already-built objects (palm logs, bushes, fauna). ⏳ In progress — *content is done: the palm tree (foliage, sapling, grows on sand), coconuts, natural fauna spawning in the oceans. The distinct biomes themselves are waiting on the Terrablender library for our version.*
 
-**Slice v0.6 Pirate items and decor:** barrels, cannons, ropes, lanterns, rum, flags, a ship's wheel, pirate armor — props and gear. Built before the dungeons so it can be used to decorate them. Plus a use for cleansed doubloons. ⏰ In the plans
+**Slice v0.6 Pirate items and decor:** barrels, cannons, ropes, lanterns, rum, flags, a ship's wheel, pirate armor — props and gear. Built before the dungeons so it can be used to decorate them. Plus a use for cleansed doubloons. ⏳ In progress — *done: the pirate armour set (tricorn, coat, breeches, seafarer's boots with water speed; its purpose — a disguise among pirates), the doubloon block and gold-gated recipes, and decor blocks (rope, ship lantern, powder-barrel trap). Left: rum.*
 
 **Slice v0.7 Dungeons and structures:** a sunken pirate ship, island stashes, underwater caves, and the Sea Altar — built on the ready pirate decor. Inside: cursed doubloons and treasure. ⏰ In the plans
 

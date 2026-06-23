@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "PGP",
+    "PGP"
+  ],
+  "key": {
+    "P": "oceanscurse:palm_planks",
+    "G": "minecraft:gunpowder"
+  },
+  "result": { "id": "oceanscurse:powder_barrel" }
+}

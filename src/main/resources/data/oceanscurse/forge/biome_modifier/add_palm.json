@@ -1,0 +1,11 @@
+{
+  "type": "forge:add_features",
+  "biomes": [
+    "minecraft:beach",
+    "minecraft:desert",
+    "minecraft:jungle",
+    "minecraft:sparse_jungle"
+  ],
+  "features": "oceanscurse:palm",
+  "step": "vegetal_decoration"
+}

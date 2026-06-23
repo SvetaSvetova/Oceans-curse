@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "hanging=false": { "model": "oceanscurse:block/ship_lantern" },
+    "hanging=true": { "model": "oceanscurse:block/ship_lantern_hanging" }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "oceanscurse:block/powder_barrel_top",
+    "side": "oceanscurse:block/powder_barrel_side",
+    "bottom": "oceanscurse:block/powder_barrel_top"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "oceanscurse:block/coconuts",
+    "all": "oceanscurse:block/coconuts"
+  },
+  "elements": [
+    {
+      "from": [4, 3, 4],
+      "to": [12, 13, 12],
+      "faces": {
+        "down":  { "uv": [0, 0, 8, 8], "texture": "#all" },
+        "up":    { "uv": [0, 0, 8, 8], "texture": "#all" },
+        "north": { "uv": [0, 3, 8, 13], "texture": "#all" },
+        "south": { "uv": [0, 3, 8, 13], "texture": "#all" },
+        "west":  { "uv": [0, 3, 8, 13], "texture": "#all" },
+        "east":  { "uv": [0, 3, 8, 13], "texture": "#all" }
+      }
+    }
+  ]
+}

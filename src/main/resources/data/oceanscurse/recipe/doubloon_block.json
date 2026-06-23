@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "DDD",
+    "DDD",
+    "DDD"
+  ],
+  "key": { "D": "oceanscurse:cleansed_doubloon" },
+  "result": { "id": "oceanscurse:doubloon_block" }
+}

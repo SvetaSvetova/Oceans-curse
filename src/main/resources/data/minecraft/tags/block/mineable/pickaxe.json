@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "oceanscurse:spikes"
+    "oceanscurse:spikes",
+    "oceanscurse:doubloon_block",
+    "oceanscurse:ship_lantern"
   ]
 }
